@@ -50,9 +50,10 @@ This command will create a virtual environment and install all the required depe
    ```bash
     cp .env.example .env
 Replace the values in your **.env** file with your actual GitLab instance details.
-5. **Configure repositories links:**
+
+6. **Configure repositories links:**
    ```bash
-    cp repos.example.json repos.json
+   cp repos.example.json repos.json
 Replace the values in your **repos.json** file with your actual source repositories details.
 
 
