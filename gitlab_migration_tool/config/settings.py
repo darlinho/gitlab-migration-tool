@@ -1,18 +1,10 @@
 from environs import Env
-import os
 
 # Initialize the environs Env instance
 env = Env()
 
-# Define the path to the .env file
-dotenv_path = os.path.join(os.getcwd(), ".env")
-
-# Check if the .env file exists and is required
-if not os.path.exists(dotenv_path):
-    raise FileNotFoundError("Error: .env file is required but not found in the project root directory.")
-
 # Load environment variables from the .env file
-env.read_env(dotenv_path)
+env.read_env()
 
 # Access environment variables with automatic type conversion and error handling
 git_source_username = env("GIT_SOURCE_USERNAME", required=True)
