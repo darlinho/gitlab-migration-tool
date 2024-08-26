@@ -8,8 +8,6 @@ from .utils.url_parsing import get_groups_from_url, get_repo_name_from_url
 from .gitlab_manager import GitLabManager
 
 def main():
-    print(f"Current Working Directory: {os.getcwd()}")  # Print current directory
-
     def load_repositories(file_path):
         with open(file_path, 'r') as file:
             data = json.load(file)

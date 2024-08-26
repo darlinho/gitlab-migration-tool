@@ -4,7 +4,7 @@ import os
 # Initialize the environs Env instance
 env = Env()
 
-# Explicitly define the path to the .env file (you can customize this as needed)
+# Define the path to the .env file
 dotenv_path = os.path.join(os.getcwd(), ".env")
 
 # Check if the .env file exists and is required
