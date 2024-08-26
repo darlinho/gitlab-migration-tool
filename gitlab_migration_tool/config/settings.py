@@ -1,30 +1,23 @@
+from environs import Env
 import os
-from dotenv import load_dotenv, find_dotenv
 
-# Try to find the .env file
-dotenv_path = find_dotenv()
+# Initialize the environs Env instance
+env = Env()
 
-if not dotenv_path:
-    raise FileNotFoundError("Error: .env file not found. Please ensure that the .env file exists in the project root directory.")
+# Explicitly define the path to the .env file (you can customize this as needed)
+dotenv_path = os.path.join(os.getcwd(), ".env")
+
+# Check if the .env file exists and is required
+if not os.path.exists(dotenv_path):
+    raise FileNotFoundError("Error: .env file is required but not found in the project root directory.")
 
 # Load environment variables from the .env file
-load_dotenv(dotenv_path)
+env.read_env(dotenv_path)
 
-# Access environment variables
-git_source_username = os.getenv('GIT_SOURCE_USERNAME')
-git_source_password = os.getenv('GIT_SOURCE_PASSWORD')
-git_target_repo_url = os.getenv('GIT_TARGET_REPO_URL')
-git_target_private_token = os.getenv('GIT_TARGET_PRIVATE_TOKEN')
-git_target_parent_group_name = os.getenv('GIT_TARGET_PARENT_GROUP_NAME')
-git_source_local_repo_path = "/tmp/cloned_repo"
-
-# Check if critical environment variables are missing
-required_vars = [
-    "GIT_SOURCE_USERNAME", "GIT_SOURCE_PASSWORD",
-    "GIT_TARGET_REPO_URL", "GIT_TARGET_PRIVATE_TOKEN", "GIT_TARGET_PARENT_GROUP_NAME"
-]
-
-for var in required_vars:
-    if not os.getenv(var):
-        raise EnvironmentError(f"Error: The environment variable '{var}' is not set in the .env file.")
-
+# Access environment variables with automatic type conversion and error handling
+git_source_username = env("GIT_SOURCE_USERNAME", required=True)
+git_source_password = env("GIT_SOURCE_PASSWORD", required=True)
+git_target_repo_url = env("GIT_TARGET_REPO_URL", required=True)
+git_target_private_token = env("GIT_TARGET_PRIVATE_TOKEN", required=True)
+git_target_parent_group_name = env("GIT_TARGET_PARENT_GROUP_NAME", required=True)
+git_source_local_repo_path = env("GIT_SOURCE_LOCAL_REPO_PATH", default="/tmp/cloned_repo")
