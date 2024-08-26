@@ -11,7 +11,6 @@ if not dotenv_path:
 load_dotenv(dotenv_path)
 
 # Access environment variables
-git_source_repo_url = os.getenv('GIT_SOURCE_REPO_URL')
 git_source_username = os.getenv('GIT_SOURCE_USERNAME')
 git_source_password = os.getenv('GIT_SOURCE_PASSWORD')
 git_target_repo_url = os.getenv('GIT_TARGET_REPO_URL')
@@ -21,7 +20,7 @@ git_source_local_repo_path = "/tmp/cloned_repo"
 
 # Check if critical environment variables are missing
 required_vars = [
-    "GIT_SOURCE_REPO_URL", "GIT_SOURCE_USERNAME", "GIT_SOURCE_PASSWORD",
+    "GIT_SOURCE_USERNAME", "GIT_SOURCE_PASSWORD",
     "GIT_TARGET_REPO_URL", "GIT_TARGET_PRIVATE_TOKEN", "GIT_TARGET_PARENT_GROUP_NAME"
 ]
 
