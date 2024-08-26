@@ -62,7 +62,6 @@ class GitLabManager:
         encoded_password = quote(password)
 
         auth_repo_url = repo_url.replace("https://", f"https://{encoded_username}:{encoded_password}@")
-        print(f"Cloning from {auth_repo_url}")
 
         clone_dir = os.path.join(os.getcwd(), git_source_local_repo_path)
 
