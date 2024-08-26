@@ -47,11 +47,34 @@ This command will create a virtual environment and install all the required depe
    ```bash
     poetry shell
 5. **Configure environment variables:**
-   ```bash
-    cp .env.example .env
-Replace the values in your **.env** file with your actual GitLab instance details.
+   You can configure the necessary environment variables in two ways:
 
-6. **Configure repositories links:**
+   1. **Option 1: Using a .env File**
+   
+      - Copy the .env.example file to create a .env file:
+         ```bash
+         cp .env.example .env
+      - Open the .env file and modify the variables with your own values:
+         ```ini
+         ## SOURCE
+         GIT_SOURCE_USERNAME=test@example.com
+         GIT_SOURCE_PASSWORD=test
+
+         ## TARGET
+         GIT_TARGET_REPO_URL=https://example.com
+         GIT_TARGET_PRIVATE_TOKEN=gtoken
+         GIT_TARGET_PARENT_GROUP_NAME=parent-group
+      - **Save the .env file**. The application will automatically load these variables when it runs.
+
+   2. **Option 2: Exporting Environment Variables**
+      Alternatively, you can directly export environment variables in your terminal session:
+         ```bash
+         export GIT_SOURCE_USERNAME="test@example.com"
+         export GIT_SOURCE_PASSWORD="test"
+         export GIT_TARGET_REPO_URL="https://example.com"
+         export GIT_TARGET_PRIVATE_TOKEN="gtoken"
+         export GIT_TARGET_PARENT_GROUP_NAME="parent-group"
+6. **Configure source repositories links:**
    ```bash
    cp repos.example.json repos.json
 Replace the values in your **repos.json** file with your actual source repositories details.
