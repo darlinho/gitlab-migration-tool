@@ -1,0 +1,10 @@
+{
+  "repositories": [
+    {
+      "url": "https://gitea.com/group1/group2/example.git"
+    },
+    {
+      "url": "https://gitea.com/group2/group4/example2.git"
+    }
+  ]
+}
