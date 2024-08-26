@@ -18,6 +18,7 @@ The project is structured to keep functionality modular and organized:
 - **`gitlab_manager.py`:** A consolidated module containing all GitLab operations, including group management, project creation, and repository operations.
 - **`utils/`:** Contains utility modules such as progress bars and URL parsing.
 - **`tests/`:** Contains test cases for the project, ensuring the reliability of the migration process.
+- **`repos.json:`:** A configuration file that lists the source repositories to be migrated. This file includes URLs and other relevant details for each repository, allowing the tool to process multiple repositories in sequence.
 
 ## Installation
 
