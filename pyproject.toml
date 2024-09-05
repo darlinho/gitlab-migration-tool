@@ -15,6 +15,7 @@ gitpython = "^3.1.43"
 python-gitlab = "^4.9.0"
 tqdm = "^4.66.5"
 environs = "^11.0.0"
+rich = "^13.8.0"
 
 
 [tool.poetry.group.dev.dependencies]
