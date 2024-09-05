@@ -5,6 +5,8 @@ from git import Repo
 from urllib.parse import quote
 from .config.settings import git_target_repo_url, git_target_private_token, git_source_local_repo_path
 from .utils.progress import CloneProgress, PushProgress
+from .utils.prints import print_styled_message, print_error_message, print_warning_message, print_success_message
+from rich import print as print_warning_message
 
 
 class GitLabManager:
@@ -19,7 +21,7 @@ class GitLabManager:
                 group = self.gl.groups.get(full_path)
             else:
                 group = self.gl.groups.get(group_name)
-            print(f"Existing group found: {group.path}")
+            print_warning_message(f"Existing group found: {group.path}")
         except gitlab.exceptions.GitlabGetError:
             group_data = {
                 'name': group_name,
@@ -28,34 +30,43 @@ class GitLabManager:
                 'visibility': 'private',
             }
             group = self.gl.groups.create(group_data)
-            print(f"Group successfully created: {group.name} (ID: {group.id})")
+            print_success_message(f"Group successfully created: {group.name} (ID: {group.id})")
 
         return group
 
-    def find_or_create_sub_groups(self, parent_group, subgroups):
+    def find_or_create_sub_groups(self, current_parent_group=None, subgroups=None):
         """Check or create nested subgroups."""
-        current_parent_group = parent_group
 
         for subgroup_name in subgroups:
-            current_parent_group = self.find_or_create_group(subgroup_name, current_parent_group.id)
+            parent_id = current_parent_group.id if current_parent_group else None
+            current_parent_group = self.find_or_create_group(subgroup_name, parent_id)
 
-        return current_parent_group
+        return current_parent_group  # Return the last created subgroup
+
 
     def create_project_in_group(self, repo_name, parent_group):
         """Create a project in a given group."""
         try:
             project = self.gl.projects.create({'name': repo_name, 'namespace_id': parent_group.id})
-            print(f"Project '{repo_name}' created in the group '{parent_group.full_path}'.")
+            # print(f"Project '{repo_name}' created in the group '{parent_group.full_path}'.")
+            print_styled_message(f"Project '{repo_name}' created in the group '{parent_group.full_path}'.")
             return project.http_url_to_repo
         except gitlab.exceptions.GitlabCreateError as e:
-            print(f"Error creating project: {e}")
-            return None
+            # Handle case where the repository already exists
+            if "has already been taken" in str(e):
+                print_warning_message(f"Project '{repo_name}' already exists in GitLab. Continue...")
+                # Fetch the existing project and return its GitLab URL
+                return
+            else:
+                raise e
+
 
     def clone_repository(self, username, password, repo_url):
         """Clone the repository from the source."""
         # Remove the directory if it exists
         if os.path.exists(git_source_local_repo_path):
-            print(f"Removing existing directory: {git_source_local_repo_path}")
+            # print(f"Removing existing directory: {git_source_local_repo_path}")
+            print_styled_message(f"Removing existing directory: {git_source_local_repo_path}")
             shutil.rmtree(git_source_local_repo_path)
 
         encoded_username = quote(username)
@@ -67,16 +78,20 @@ class GitLabManager:
 
         try:
             Repo.clone_from(auth_repo_url, clone_dir, progress=CloneProgress())
-            print(f"Repository successfully cloned to: {clone_dir}")
+            # print(f"Repository successfully cloned to: {clone_dir}")
+            print_styled_message(f"Repository successfully cloned to: {clone_dir}")
+        except gitlab.exceptions.GitlabCreateError as create_error:
+            print_error_message(f"Error creating project: {create_error}")
         except Exception as e:
-            print(f"Error while cloning the repository: {e}")
+            # Catch any other errors and display them explicitly
+            print_error_message(f"An unexpected error occurred: {str(e)}")
 
     def push_all_branches_to_new_repo(self, local_repo_path, new_repo_url):
         """Push all branches from a local Git repository to a new remote repository."""
         try:
             repo = Repo(local_repo_path)
             if repo.bare:
-                print(f"The repository at {local_repo_path} is bare or invalid.")
+                print_error_message(f"The repository at {local_repo_path} is bare or invalid.")
                 return
 
             if 'new-origin' in repo.remotes:
@@ -93,13 +108,13 @@ class GitLabManager:
                     if branch_name not in repo.heads:
                         repo.create_head(branch_name, remote_ref)
                     repo.heads[branch_name].set_tracking_branch(remote_ref)
-                    print(f"Branch {branch_name} is now tracked locally.")
+                    print_styled_message(f"Branch {branch_name} is now tracked locally.")
 
             for ref in repo.heads:
-                print(f"Pushing branch {ref.name} to {new_repo_url}")
+                print_styled_message(f"Pushing branch {ref.name} to {new_repo_url}")
                 new_origin.push(ref.name, progress=PushProgress())
 
-            print("All branches have been pushed successfully.")
+            print_success_message("All branches have been pushed successfully.")
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print_error_message(f"An error occurred: {e}")
