@@ -7,6 +7,8 @@ env = Env()
 env.read_env()
 
 # Access environment variables with automatic type conversion and error handling
+git_source_url = env("GIT_SOURCE_URL")
+git_source_token = env("GIT_SOURCE_TOKEN")
 git_source_username = env("GIT_SOURCE_USERNAME", required=True)
 git_source_password = env("GIT_SOURCE_PASSWORD", required=True)
 git_target_repo_url = env("GIT_TARGET_REPO_URL", required=True)
