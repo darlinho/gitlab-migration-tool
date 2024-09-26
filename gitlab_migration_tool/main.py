@@ -29,8 +29,8 @@ def main():
         gitlab_manager.clone_repository(git_source_username, git_source_password, git_source_repo_url)
 
         # Create the repository in the nested subgroups on GitLab
-        parent_group = gitlab_manager.find_or_create_group(git_target_parent_group_name)
-        last_group = gitlab_manager.find_or_create_sub_groups(parent_group, subgroups)
+        # parent_group = gitlab_manager.find_or_create_group(git_target_parent_group_name)
+        last_group = gitlab_manager.find_or_create_sub_groups(None, subgroups)
         git_target_current_http_url_to_repo = gitlab_manager.create_project_in_group(repo_name, last_group)
 
         # Push all branches to the new repository

@@ -19,7 +19,6 @@ class GitLabManager:
                 group = self.gl.groups.get(full_path)
             else:
                 group = self.gl.groups.get(group_name)
-            print(f"Existing group found: {group.path}")
         except gitlab.exceptions.GitlabGetError:
             group_data = {
                 'name': group_name,
@@ -28,16 +27,15 @@ class GitLabManager:
                 'visibility': 'private',
             }
             group = self.gl.groups.create(group_data)
-            print(f"Group successfully created: {group.name} (ID: {group.id})")
 
         return group
 
-    def find_or_create_sub_groups(self, parent_group, subgroups):
+    def find_or_create_sub_groups(self, current_parent_group=None, subgroups=None):
         """Check or create nested subgroups."""
-        current_parent_group = parent_group
 
         for subgroup_name in subgroups:
-            current_parent_group = self.find_or_create_group(subgroup_name, current_parent_group.id)
+            parent_id = current_parent_group.id if current_parent_group else None
+            current_parent_group = self.find_or_create_group(subgroup_name, parent_id)
 
         return current_parent_group
 
